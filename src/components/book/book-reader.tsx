@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -17,6 +18,8 @@ import { useTheme } from "next-themes";
 import type { BookPage } from "@/data/book-content";
 
 gsap.registerPlugin(useGSAP);
+
+const INTRO_STORAGE_KEY = "khama-intro-seen";
 
 type BookReaderProps = {
   pages: BookPage[];
@@ -45,6 +48,7 @@ export function BookReader({ pages }: BookReaderProps) {
   const [cursor, setCursor] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isNavigatorOpen, setIsNavigatorOpen] = useState(false);
+  const [showIntro, setShowIntro] = useState(false);
 
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -58,6 +62,11 @@ export function BookReader({ pages }: BookReaderProps) {
 
     setTheme(isDark ? "light" : "dark");
   }
+
+  const completeIntro = useCallback(() => {
+    window.localStorage.setItem(INTRO_STORAGE_KEY, "seen");
+    setShowIntro(false);
+  }, []);
 
   useEffect(() => {
     if (hasLoadedSavedPage.current) return;
@@ -104,6 +113,21 @@ export function BookReader({ pages }: BookReaderProps) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   });
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const hasSeenIntro =
+        window.localStorage.getItem(INTRO_STORAGE_KEY) === "seen";
+
+      if (!hasSeenIntro) {
+        setShowIntro(true);
+      }
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   useGSAP(
     () => {
@@ -262,7 +286,171 @@ export function BookReader({ pages }: BookReaderProps) {
         onClose={() => setIsNavigatorOpen(false)}
         onGoToPage={goToPageIndex}
       />
+
+      {showIntro && <CinematicIntro onComplete={completeIntro} />}
     </main>
+  );
+}
+
+function CinematicIntro({ onComplete }: { onComplete: () => void }) {
+  const introRef = useRef<HTMLDivElement | null>(null);
+  const hasCompletedRef = useRef(false);
+
+  const finishIntro = useCallback(() => {
+    if (hasCompletedRef.current) return;
+
+    hasCompletedRef.current = true;
+    onComplete();
+  }, [onComplete]);
+
+  useGSAP(
+    () => {
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (prefersReducedMotion) {
+        const delayedCall = gsap.delayedCall(1.2, finishIntro);
+
+        return () => {
+          delayedCall.kill();
+        };
+      }
+
+      const timeline = gsap.timeline({
+        defaults: {
+          ease: "power3.out",
+        },
+        onComplete: finishIntro,
+      });
+
+      timeline
+        .set(".cinema-intro", {
+          autoAlpha: 1,
+        })
+        .fromTo(
+          ".cinema-rule",
+          {
+            scaleX: 0,
+          },
+          {
+            scaleX: 1,
+            duration: 0.95,
+          },
+          0.18,
+        )
+        .fromTo(
+          ".cinema-kicker",
+          {
+            autoAlpha: 0,
+            y: 8,
+            letterSpacing: "0.42em",
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            letterSpacing: "0.3em",
+            duration: 0.9,
+          },
+          0.42,
+        )
+        .fromTo(
+          ".cinema-title",
+          {
+            autoAlpha: 0,
+            y: 14,
+            scale: 0.985,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 1.15,
+          },
+          0.9,
+        )
+        .fromTo(
+          ".cinema-subtitle",
+          {
+            autoAlpha: 0,
+            y: 8,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.9,
+          },
+          1.38,
+        )
+        .fromTo(
+          ".cinema-loading-line span",
+          {
+            scaleX: 0,
+          },
+          {
+            scaleX: 1,
+            duration: 1.5,
+            ease: "power2.inOut",
+          },
+          1.55,
+        )
+        .to(
+          ".cinema-intro-content",
+          {
+            autoAlpha: 0,
+            y: -8,
+            duration: 0.72,
+            ease: "power2.inOut",
+          },
+          3.25,
+        )
+        .to(
+          ".cinema-intro",
+          {
+            autoAlpha: 0,
+            duration: 0.68,
+            ease: "power2.inOut",
+          },
+          3.55,
+        );
+
+      return () => {
+        timeline.kill();
+      };
+    },
+    {
+      scope: introRef,
+      dependencies: [finishIntro],
+    },
+  );
+
+  return (
+    <div ref={introRef} className="cinema-intro" role="status">
+      <div className="cinema-grain" aria-hidden="true" />
+
+      <div className="cinema-intro-content">
+        <span className="cinema-rule" aria-hidden="true" />
+
+        <p className="cinema-kicker">MMM PRESENTS</p>
+
+        <h1 className="cinema-title">KHAMA</h1>
+
+        <p className="cinema-subtitle">A WEBSITE BOOK</p>
+
+        <div className="cinema-loading-line" aria-hidden="true">
+          <span />
+        </div>
+      </div>
+
+      <button
+        className="cinema-skip"
+        onClick={finishIntro}
+        type="button"
+        aria-label="Skip intro"
+      >
+        Skip
+      </button>
+    </div>
   );
 }
 

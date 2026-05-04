@@ -448,7 +448,7 @@ export const bookPages: BookPage[] = [
     layout: "chapter-image",
     image: "/images/tennis-court.jpg",
     caption: "The Court Where Morning Was Still Asleep",
-    dateTaken: "Date unknown",
-    location: "Tennis court",
+    dateTaken: "2017",
+    location: "NKowankowa-A Tennis court",
   },
 ];
