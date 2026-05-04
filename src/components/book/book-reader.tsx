@@ -86,11 +86,11 @@ export function BookReader({ pages }: BookReaderProps) {
     () => {
       gsap.fromTo(
         ".page-animate",
-        { opacity: 0, y: 12 },
+        { opacity: 0, y: 14 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
+          duration: 0.72,
           stagger: 0.05,
           ease: "power2.out",
         },
@@ -122,9 +122,7 @@ export function BookReader({ pages }: BookReaderProps) {
     if (info.offset.x > 70) goPrev();
   }
 
-  if (!currentPage) {
-    return null;
-  }
+  if (!currentPage) return null;
 
   return (
     <main ref={rootRef} className="reader-shell">
@@ -148,9 +146,9 @@ export function BookReader({ pages }: BookReaderProps) {
             key={currentPage.slug}
             className="editorial-page"
             custom={direction}
-            initial={{ opacity: 0, x: direction * 26 }}
+            initial={{ opacity: 0, x: direction * 24 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: direction * -18 }}
+            exit={{ opacity: 0, x: direction * -16 }}
             transition={{
               duration: 0.42,
               ease: [0.22, 1, 0.36, 1],
@@ -202,7 +200,6 @@ export function BookReader({ pages }: BookReaderProps) {
           >
             <Moon size={13} className="theme-moon" />
             <Sun size={13} className="theme-sun" />
-
             <span className="theme-label theme-label-light">Dark</span>
             <span className="theme-label theme-label-dark">Light</span>
           </button>
@@ -219,10 +216,34 @@ function PageContent({
   page: BookPage;
   isDesktop: boolean;
 }) {
+  if (page.layout === "author") {
+    return (
+      <div className="page-author">
+        {page.title && (
+          <p className="author-title page-animate">{page.title}</p>
+        )}
+      </div>
+    );
+  }
+
   if (page.layout === "collage") {
     return (
       <div className="page-collage">
         <div className="collage-block">
+          <header className="collage-header">
+            {page.kicker && (
+              <p className="page-kicker page-animate">{page.kicker}</p>
+            )}
+            {page.title && (
+              <h1 className="collage-title page-animate">{page.title}</h1>
+            )}
+            {page.subtitle && (
+              <p className="collage-subtitle page-animate">{page.subtitle}</p>
+            )}
+          </header>
+
+          <div className="section-divider page-animate" />
+
           <div className="collage-grid">
             <div className="collage-text page-animate">
               {page.body?.map((paragraph, index) => (
@@ -236,7 +257,7 @@ function PageContent({
                   src={page.image}
                   alt={page.caption ?? ""}
                   fill
-                  priority={cursorSafePriority(page.slug)}
+                  priority={page.slug === "chapter-one-intro"}
                   sizes={isDesktop ? "220px" : "34vw"}
                   className="collage-image-media"
                 />
@@ -251,14 +272,12 @@ function PageContent({
   if (page.layout === "cover") {
     return (
       <div className="page-cover">
-        {page.title && <p className="cover-title page-animate">{page.title}</p>}
-
-        {page.body?.[0] && (
-          <p className="cover-copy page-animate">{page.body[0]}</p>
+        {page.kicker && (
+          <p className="page-kicker page-animate">{page.kicker}</p>
         )}
-
-        {page.body?.[1] && (
-          <p className="cover-subcopy page-animate">{page.body[1]}</p>
+        {page.title && <p className="cover-title page-animate">{page.title}</p>}
+        {page.subtitle && (
+          <p className="cover-subcopy page-animate">{page.subtitle}</p>
         )}
       </div>
     );
@@ -266,8 +285,22 @@ function PageContent({
 
   return (
     <div className="page-text">
-      {page.title && (
-        <p className="text-page-title page-animate">{page.title}</p>
+      {(page.kicker || page.title || page.subtitle) && (
+        <>
+          <div className="text-page-head">
+            {page.kicker && (
+              <p className="page-kicker page-animate">{page.kicker}</p>
+            )}
+            {page.title && (
+              <h2 className="text-page-title page-animate">{page.title}</h2>
+            )}
+            {page.subtitle && (
+              <p className="text-page-subtitle page-animate">{page.subtitle}</p>
+            )}
+          </div>
+
+          <div className="section-divider page-animate" />
+        </>
       )}
 
       <div className="text-page-copy">
@@ -279,8 +312,4 @@ function PageContent({
       </div>
     </div>
   );
-}
-
-function cursorSafePriority(slug: string) {
-  return slug === "intro-collage";
 }

@@ -2,18 +2,16 @@
 
 :root {
   --canvas: #e8e4da;
-  --canvas-soft: #f0ede5;
   --paper-noise: rgba(21, 19, 16, 0.055);
   --paper-noise-soft: rgba(21, 19, 16, 0.028);
   --ink: #191714;
   --muted: #7a746b;
-  --line: rgba(25, 23, 20, 0.16);
-  --line-strong: rgba(25, 23, 20, 0.24);
+  --line: rgba(25, 23, 20, 0.14);
+  --line-strong: rgba(25, 23, 20, 0.22);
 }
 
 .dark {
   --canvas: #000000;
-  --canvas-soft: #000000;
   --paper-noise: rgba(255, 255, 255, 0.03);
   --paper-noise-soft: rgba(255, 255, 255, 0.015);
   --ink: #f3efe6;
@@ -66,7 +64,7 @@ button {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.34;
   background-image:
     radial-gradient(var(--paper-noise) 0.65px, transparent 0.65px),
     radial-gradient(var(--paper-noise-soft) 0.85px, transparent 0.85px);
@@ -99,7 +97,7 @@ button {
   flex: 1;
   display: grid;
   place-items: center;
-  padding: 40px 22px 70px;
+  padding: 48px 22px 84px;
 }
 
 .editorial-page {
@@ -118,112 +116,178 @@ button {
   place-items: center;
 }
 
+/* -------------------- */
+/* Shared page elements */
+/* -------------------- */
+
+.page-kicker {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+}
+
+/* -------------------- */
+/* First page / collage */
+/* -------------------- */
+
 .collage-block {
-  width: min(64vw, 310px);
-  min-width: 260px;
+  width: min(82vw, 560px);
+}
+
+.collage-header {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.collage-title {
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(18px, 2.1vw, 24px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.collage-subtitle {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
 }
 
 .collage-grid {
   display: grid;
-  grid-template-columns: 1fr 118px;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) 132px;
+  gap: 18px;
   align-items: start;
+  padding-top: 18px;
 }
 
 .collage-text {
   display: grid;
-  gap: 8px;
-  align-content: start;
+  gap: 12px;
 }
 
 .collage-text p {
   margin: 0;
-  font-size: 10px;
-  line-height: 1.18;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: clamp(12px, 1.1vw, 13px);
+  line-height: 1.36;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--ink);
 }
 
 .collage-image {
   position: relative;
   width: 100%;
-  aspect-ratio: 0.67 / 1;
+  aspect-ratio: 0.72 / 1;
   overflow: hidden;
   background: #111;
 }
 
 .collage-image-media {
   object-fit: cover;
-  filter: grayscale(1) contrast(0.9) brightness(1.02);
+  filter: grayscale(1) contrast(0.92) brightness(1.03);
 }
 
+/* ---------------- */
+/* Text-only pages  */
+/* ---------------- */
+
 .page-text {
-  max-width: 620px;
+  max-width: 720px;
   padding: 0 20px;
 }
 
+.text-page-head {
+  width: min(100%, 42ch);
+  margin: 0 auto 18px;
+  display: grid;
+  gap: 6px;
+}
+
 .text-page-title {
-  margin: 0 0 34px;
-  text-align: center;
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 500;
-  letter-spacing: 0.36em;
-  text-transform: uppercase;
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  font-weight: 600;
   color: var(--ink);
 }
 
+.text-page-subtitle {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .text-page-copy {
-  width: min(100%, 36ch);
-  margin: 0 auto;
+  width: min(100%, 42ch);
+  margin: 22px auto 0;
   display: grid;
   gap: 18px;
 }
 
 .text-page-copy p {
   margin: 0;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(18px, 4.7vw, 24px);
-  line-height: 1.52;
-  letter-spacing: -0.018em;
+  font-size: clamp(15px, 1.4vw, 17px);
+  line-height: 1.58;
+  font-weight: 500;
+  letter-spacing: 0.005em;
   color: var(--ink);
 }
 
+/* ---------- */
+/* Cover page */
+/* ---------- */
+
 .page-cover {
-  max-width: 620px;
+  max-width: 720px;
   padding: 0 20px;
   text-align: center;
 }
 
 .cover-title {
-  margin: 0 0 16px;
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 500;
-  letter-spacing: 0.38em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.cover-copy {
-  margin: 0;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(28px, 7vw, 46px);
-  line-height: 1.08;
+  margin: 10px 0 0;
+  font-size: clamp(30px, 7vw, 54px);
+  line-height: 0.98;
   letter-spacing: -0.03em;
+  font-weight: 600;
   color: var(--ink);
 }
 
 .cover-subcopy {
   margin: 16px auto 0;
-  max-width: 24ch;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(18px, 4.2vw, 22px);
-  line-height: 1.42;
-  color: var(--ink);
+  max-width: 30ch;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
+
+/* -------- */
+/* Controls */
+/* -------- */
 
 .tap-zone {
   position: absolute;
@@ -263,7 +327,7 @@ button {
   align-items: center;
   gap: 10px;
   pointer-events: auto;
-  opacity: 0.72;
+  opacity: 0.78;
   transition: opacity 180ms ease;
 }
 
@@ -348,28 +412,66 @@ button {
   display: none;
 }
 
-@media (max-width: 520px) {
-  .reader-stage {
-    padding: 24px 20px 76px;
-  }
+/* ----------- */
+/* Responsive  */
+/* ----------- */
 
-  .editorial-page {
-    min-height: 78svh;
+@media (max-width: 640px) {
+  .reader-stage {
+    padding: 28px 18px 80px;
   }
 
   .collage-block {
-    width: min(72vw, 290px);
-    min-width: 220px;
+    width: min(82vw, 320px);
+  }
+
+  .collage-header {
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+
+  .collage-title {
+    font-size: 16px;
+    max-width: 15ch;
+  }
+
+  .collage-subtitle {
+    font-size: 10px;
   }
 
   .collage-grid {
-    grid-template-columns: 1fr 96px;
-    gap: 8px;
+    grid-template-columns: 1fr 104px;
+    gap: 12px;
+    padding-top: 14px;
+  }
+
+  .collage-text {
+    gap: 10px;
   }
 
   .collage-text p {
-    font-size: 9px;
-    line-height: 1.15;
+    font-size: 11px;
+    line-height: 1.32;
+  }
+
+  .text-page-head {
+    width: min(100%, 30ch);
+    margin-bottom: 14px;
+  }
+
+  .text-page-title {
+    font-size: 18px;
+  }
+
+  .text-page-copy {
+    width: min(100%, 30ch);
+    margin-top: 18px;
+    gap: 16px;
+  }
+
+  .text-page-copy p {
+    font-size: 14px;
+    line-height: 1.54;
   }
 
   .reader-footer {
@@ -381,7 +483,7 @@ button {
     max-width: 320px;
     grid-template-columns: 34px 1fr 34px auto;
     gap: 7px;
-    opacity: 0.78;
+    opacity: 0.82;
   }
 
   .nav-button {
@@ -398,67 +500,57 @@ button {
   .theme-label {
     font-size: 8px;
   }
-
-  .text-page-copy {
-    width: min(100%, 32ch);
-    gap: 16px;
-  }
-
-  .text-page-copy p {
-    font-size: 18px;
-    line-height: 1.48;
-  }
 }
 
-@media (min-width: 900px) {
-  .editorial-page {
-    max-width: 980px;
-  }
-
+@media (min-width: 1000px) {
   .collage-block {
-    width: 340px;
+    width: 620px;
   }
 
   .collage-grid {
-    grid-template-columns: 1fr 132px;
-    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) 164px;
+    gap: 22px;
   }
 
-  .collage-text p {
-    font-size: 10px;
+  .text-page-copy,
+  .text-page-head {
+    width: min(100%, 46ch);
   }
 }
-
-.text-page-copy p {
-  margin: 0;
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  font-size: clamp(13px, 3.45vw, 16px);
-  line-height: 1.42;
-  font-weight: 500;
-  letter-spacing: 0.055em;
-  color: var(--ink);
+.page-author {
+  width: 100%;
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 0 20px;
 }
 
-.cover-copy {
+.author-title {
   margin: 0;
-  max-width: 28ch;
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  font-size: clamp(22px, 6vw, 38px);
-  line-height: 1.02;
+  font-size: clamp(13px, 2.2vw, 16px);
+  line-height: 1;
   font-weight: 600;
-  letter-spacing: 0.015em;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
   color: var(--ink);
 }
 
-.cover-subcopy {
-  margin: 18px auto 0;
-  max-width: 28ch;
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  font-size: clamp(11px, 3vw, 13px);
-  line-height: 1.35;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+.page-author {
+  width: 100%;
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.author-title {
+  margin: 0;
+  font-size: clamp(12px, 2vw, 15px);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink);
 }
