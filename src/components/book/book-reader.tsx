@@ -44,6 +44,7 @@ export function BookReader({ pages }: BookReaderProps) {
 
   const [cursor, setCursor] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [isNavigatorOpen, setIsNavigatorOpen] = useState(false);
 
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -82,6 +83,28 @@ export function BookReader({ pages }: BookReaderProps) {
     window.localStorage.setItem("khama-current-page", String(cursor));
   }, [cursor]);
 
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "ArrowRight") {
+        goNext();
+      }
+
+      if (event.key === "ArrowLeft") {
+        goPrev();
+      }
+
+      if (event.key === "Escape") {
+        setIsNavigatorOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  });
+
   useGSAP(
     () => {
       gsap.fromTo(
@@ -112,6 +135,23 @@ export function BookReader({ pages }: BookReaderProps) {
     if (cursor <= 0) return;
     setDirection(-1);
     setCursor((prev) => Math.max(prev - 1, 0));
+  }
+
+  function goToPageIndex(pageIndex: number) {
+    const safePageIndex = Math.min(Math.max(pageIndex, 0), maxCursor);
+
+    setDirection(safePageIndex > cursor ? 1 : -1);
+    setCursor(safePageIndex);
+    setIsNavigatorOpen(false);
+  }
+
+  function goToPage(slug: string) {
+    const pageIndex = pages.findIndex((page) => page.slug === slug);
+
+    if (pageIndex === -1) return;
+
+    setDirection(pageIndex > cursor ? 1 : -1);
+    setCursor(pageIndex);
   }
 
   function handleDragEnd(
@@ -158,7 +198,11 @@ export function BookReader({ pages }: BookReaderProps) {
             dragElastic={0.08}
             onDragEnd={handleDragEnd}
           >
-            <PageContent page={currentPage} isDesktop={isDesktop} />
+            <PageContent
+              page={currentPage}
+              isDesktop={isDesktop}
+              onNavigate={goToPage}
+            />
           </motion.article>
         </AnimatePresence>
       </section>
@@ -175,12 +219,17 @@ export function BookReader({ pages }: BookReaderProps) {
             <ChevronLeft size={16} />
           </button>
 
-          <div className="reader-meta">
+          <button
+            className="reader-meta"
+            onClick={() => setIsNavigatorOpen(true)}
+            aria-label="Open page navigator"
+            type="button"
+          >
             <span className="reader-page-count">
               {String(cursor + 1).padStart(2, "0")} /{" "}
               {String(pages.length).padStart(2, "0")}
             </span>
-          </div>
+          </button>
 
           <button
             className="nav-button"
@@ -205,6 +254,14 @@ export function BookReader({ pages }: BookReaderProps) {
           </button>
         </div>
       </footer>
+
+      <PageNavigator
+        isOpen={isNavigatorOpen}
+        pages={pages}
+        currentIndex={cursor}
+        onClose={() => setIsNavigatorOpen(false)}
+        onGoToPage={goToPageIndex}
+      />
     </main>
   );
 }
@@ -212,9 +269,11 @@ export function BookReader({ pages }: BookReaderProps) {
 function PageContent({
   page,
   isDesktop,
+  onNavigate,
 }: {
   page: BookPage;
   isDesktop: boolean;
+  onNavigate: (slug: string) => void;
 }) {
   if (page.layout === "author") {
     return (
@@ -222,6 +281,80 @@ function PageContent({
         {page.title && (
           <p className="author-title page-animate">{page.title}</p>
         )}
+      </div>
+    );
+  }
+
+  if (page.layout === "book-title") {
+    return (
+      <div className="page-book-title">
+        {page.title && (
+          <p className="book-intro-title page-animate">{page.title}</p>
+        )}
+
+        {page.subtitle && (
+          <p className="book-intro-subtitle page-animate">{page.subtitle}</p>
+        )}
+      </div>
+    );
+  }
+
+  if (page.layout === "contents") {
+    return (
+      <div className="page-contents">
+        <div className="contents-shell">
+          <aside className="contents-side-note page-animate"></aside>
+
+          <div className="contents-line" />
+
+          <section className="contents-main">
+            {page.title && (
+              <header className="contents-header page-animate">
+                <span className="contents-header-rule" />
+                <h1>{page.title}</h1>
+              </header>
+            )}
+
+            <div className="contents-list">
+              {page.contents?.map((item) => {
+                const isReleased =
+                  item.status === "released" && item.targetSlug;
+
+                return (
+                  <button
+                    key={`${item.page}-${item.title}`}
+                    className={`contents-item page-animate ${
+                      isReleased ? "is-released" : "is-coming-soon"
+                    }`}
+                    type="button"
+                    disabled={!isReleased}
+                    onClick={() => {
+                      if (item.targetSlug) onNavigate(item.targetSlug);
+                    }}
+                  >
+                    <span className="contents-page">{item.page}</span>
+
+                    <span className="contents-copy">
+                      <span className="contents-title">{item.title}</span>
+
+                      {item.subtitle && (
+                        <span className="contents-subtitle">
+                          {item.subtitle}
+                        </span>
+                      )}
+                    </span>
+
+                    <span className="contents-status">
+                      {isReleased ? "Open" : "Soon"}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <p className="contents-pagination page-animate">MMM</p>
+        </div>
       </div>
     );
   }
@@ -283,6 +416,46 @@ function PageContent({
     );
   }
 
+  if (page.layout === "chapter-image") {
+    return (
+      <div className="page-chapter-image">
+        {page.image && (
+          <figure className="chapter-image-frame page-animate">
+            <Image
+              src={page.image}
+              alt={page.caption ?? ""}
+              fill
+              sizes="(max-width: 640px) 74vw, 420px"
+              className="chapter-image-media"
+            />
+          </figure>
+        )}
+
+        <div className="chapter-image-meta page-animate">
+          {page.caption && (
+            <p className="chapter-image-caption">{page.caption}</p>
+          )}
+
+          <div className="chapter-image-details">
+            {page.dateTaken && (
+              <p>
+                <span>Date taken</span>
+                {page.dateTaken}
+              </p>
+            )}
+
+            {page.location && (
+              <p>
+                <span>Location</span>
+                {page.location}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page-text">
       {(page.kicker || page.title || page.subtitle) && (
@@ -310,6 +483,121 @@ function PageContent({
           </p>
         ))}
       </div>
+    </div>
+  );
+}
+
+function PageNavigator({
+  isOpen,
+  pages,
+  currentIndex,
+  onClose,
+  onGoToPage,
+}: {
+  isOpen: boolean;
+  pages: BookPage[];
+  currentIndex: number;
+  onClose: () => void;
+  onGoToPage: (pageIndex: number) => void;
+}) {
+  const chapterPages = pages
+    .map((page, index) => ({ page, index }))
+    .filter(({ page }) => {
+      return (
+        page.layout === "author" ||
+        page.layout === "book-title" ||
+        page.layout === "contents" ||
+        page.kicker ||
+        page.title
+      );
+    });
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="page-navigator" role="dialog" aria-modal="true">
+      <button
+        className="page-navigator-backdrop"
+        onClick={onClose}
+        aria-label="Close page navigator"
+        type="button"
+      />
+
+      <section className="page-navigator-panel">
+        <header className="page-navigator-header">
+          <div>
+            <p className="page-navigator-kicker">Navigate</p>
+            <h2>Pages</h2>
+          </div>
+
+          <button
+            className="page-navigator-close"
+            onClick={onClose}
+            type="button"
+          >
+            Close
+          </button>
+        </header>
+
+        <div className="page-navigator-progress">
+          <input
+            type="range"
+            min={0}
+            max={pages.length - 1}
+            value={currentIndex}
+            onChange={(event) => onGoToPage(Number(event.target.value))}
+            aria-label="Jump to page"
+          />
+
+          <p>
+            Page {String(currentIndex + 1).padStart(2, "0")} of{" "}
+            {String(pages.length).padStart(2, "0")}
+          </p>
+        </div>
+
+        <div className="page-navigator-featured">
+          {chapterPages.map(({ page, index }) => (
+            <button
+              key={page.slug}
+              className={`navigator-featured-item ${
+                currentIndex === index ? "is-active" : ""
+              }`}
+              onClick={() => onGoToPage(index)}
+              type="button"
+            >
+              <span>{String(index + 1).padStart(2, "0")}</span>
+
+              <strong>
+                {page.layout === "author"
+                  ? page.title
+                  : page.layout === "book-title"
+                    ? page.title
+                    : page.layout === "contents"
+                      ? "Content"
+                      : page.title || page.kicker || `Page ${index + 1}`}
+              </strong>
+
+              {page.subtitle && <small>{page.subtitle}</small>}
+            </button>
+          ))}
+        </div>
+
+        <div className="page-number-grid">
+          {pages.map((page, index) => (
+            <button
+              key={page.slug}
+              className={`page-number-dot ${
+                currentIndex === index ? "is-active" : ""
+              }`}
+              onClick={() => onGoToPage(index)}
+              type="button"
+              aria-label={`Go to page ${index + 1}`}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </button>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
