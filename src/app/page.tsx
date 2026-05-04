@@ -1,65 +1,180 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Image from "next/image";
+import { useMemo, useState } from "react";
+
+type Slide = {
+  text: string[];
+  image: string;
+};
+
+const slides: Slide[] = [
+  {
+    image: "/images/tennis-court.jpg",
+    text: [
+      "CHAPTER ONE: THE COURT WHERE MORNING WAS STILL ASLEEP",
+      "1. THE GIRL BEFORE THE SUN",
+      "",
+      "BEFORE I KNEW WHAT LOVE COULD TAKE FROM A MAN, I MET A GIRL BEFORE THE SUN HAD PROPERLY OPENED ITS EYES.",
+      "",
+      "SHE WAS VISITING HER GRANDMOTHER.",
+      "",
+      "I WAS VISITING MINE.",
+      "",
+      "THAT IS HOW SOME STORIES BEGIN — NOT WITH THUNDER, NOT WITH VIOLINS, NOT WITH FATE WEARING GOLD AROUND ITS NECK — BUT WITH TWO CHILDREN STANDING IN THE SAME DUSTY CORNER OF THE WORLD, PRETENDING THEY WERE NOT NERVOUS.",
+      "",
+      "HER NAME WAS SOPHIA.",
+      "",
+      "OR MAYBE THAT IS ONLY WHAT MEMORY CALLS HER NOW.",
+      "",
+      "BACK THEN, SHE WAS JUST A GIRL WITH MORNING IN HER FACE.",
+    ],
+  },
+  {
+    image: "/images/tennis-court.jpg",
+    text: [
+      "WE EXCHANGED NUMBERS LIKE THIEVES EXCHANGING KEYS TO HOUSES THEY WERE TOO YOUNG TO ENTER.",
+      "",
+      "THAT NIGHT, I BARELY SLEPT.",
+      "",
+      "NOT BECAUSE I KNEW I LOVED HER. I WAS TOO YOUNG TO NAME THINGS CORRECTLY. AT THAT AGE, LOVE IS NOT YET LOVE. IT IS JUST A BIRD TRAPPED INSIDE THE CHEST, BEATING ITS WINGS AGAINST YOUR RIBS.",
+      "",
+      "THE NEXT MORNING, BEFORE THE STREETS HAD REMEMBERED THEIR NOISE, WE MET.",
+      "",
+      "NO ONE SAW US LEAVE.",
+      "",
+      "OR MAYBE THE WHOLE WORLD SAW US AND DECIDED TO KEEP QUIET.",
+    ],
+  },
+  {
+    image: "/images/tennis-court.jpg",
+    text: [
+      "WE WALKED TO THE TENNIS COURT.",
+      "",
+      "IT WAS EMPTY.",
+      "",
+      "A COURT WITHOUT PLAYERS.",
+      "",
+      "A NET DIVIDING TWO SIDES.",
+      "",
+      "MAYBE THAT SHOULD HAVE WARNED ME.",
+      "",
+      "WE SAT THERE AND SPOKE LIKE PEOPLE WHO HAD KNOWN EACH OTHER IN ANOTHER LIFE AND WERE ONLY PRETENDING TO BE NEW.",
+      "",
+      "I REMEMBER THINKING:",
+      "",
+      "IF THIS GIRL EVER BECOMES MINE, I WILL NOT TREAT HER LIKE A SEASON.",
+      "",
+      "BUT I WAS LEAVING.",
+      "",
+      "DISTANCE ARRIVED BEFORE LOVE COULD.",
+      "",
+      "AND BECAUSE WE WERE YOUNG, WE LET IT WIN.",
+    ],
+  },
+];
+
+export default function HomePage() {
+  const [index, setIndex] = useState(0);
+  const [lightMode, setLightMode] = useState(false);
+
+  const current = slides[index];
+
+  const pageNumber = useMemo(() => String(index + 1).padStart(2, "0"), [index]);
+  const totalPages = useMemo(() => String(slides.length).padStart(2, "0"), []);
+
+  const bgClass = lightMode ? "bg-[#f3efe8] text-black" : "bg-black text-white";
+  const mutedClass = lightMode ? "text-black/55" : "text-white/55";
+  const borderClass = lightMode ? "border-black/15" : "border-white/15";
+  const controlTextClass = lightMode ? "text-black" : "text-white";
+  const controlHoverClass = lightMode
+    ? "hover:bg-black hover:text-white"
+    : "hover:bg-white hover:text-black";
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <main
+      className={`relative min-h-screen overflow-hidden transition-colors duration-500 ${bgClass}`}
+      style={{
+        fontFamily:
+          '"Arial Narrow", "Cabinet Grotesk", "Helvetica Neue", Arial, sans-serif',
+      }}
+    >
+      <div className="flex min-h-screen items-center justify-center px-6">
+        <div className="grid w-full max-w-[330px] grid-cols-[156px_132px] items-start gap-4">
+          <div className="pt-[1px]">
+            <div className="space-y-[5px]">
+              {current.text.map((line, i) =>
+                line === "" ? (
+                  <div key={i} className="h-[8px]" />
+                ) : (
+                  <p
+                    key={i}
+                    className="text-[11px] font-bold uppercase leading-[0.96] tracking-[-0.045em]"
+                  >
+                    {line}
+                  </p>
+                ),
+              )}
+            </div>
+          </div>
+
+          <div className="relative mt-[1px] h-[168px] w-[132px] overflow-hidden bg-white/5">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src={current.image}
+              alt="Khama chapter image"
+              fill
+              priority
+              className="object-cover grayscale contrast-125 brightness-75"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+
+      <button
+        aria-label="Brand mark"
+        className={`fixed bottom-6 left-6 flex h-10 w-10 items-center justify-center rounded-full border text-[13px] font-medium ${borderClass} ${controlTextClass}`}
+      >
+        K
+      </button>
+
+      <div className="fixed bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-7">
+        <button
+          onClick={() => setIndex((prev) => Math.max(prev - 1, 0))}
+          disabled={index === 0}
+          aria-label="Previous page"
+          className={`flex h-9 w-9 items-center justify-center rounded-full border text-lg transition ${borderClass} ${controlTextClass} ${controlHoverClass} ${
+            index === 0 ? "opacity-35 cursor-not-allowed" : ""
+          }`}
+        >
+          ‹
+        </button>
+
+        <div
+          className={`text-[11px] font-medium tracking-[0.22em] ${mutedClass}`}
+        >
+          {pageNumber} / {totalPages}
+        </div>
+
+        <button
+          onClick={() =>
+            setIndex((prev) => Math.min(prev + 1, slides.length - 1))
+          }
+          disabled={index === slides.length - 1}
+          aria-label="Next page"
+          className={`flex h-9 w-9 items-center justify-center rounded-full border text-lg transition ${borderClass} ${controlTextClass} ${controlHoverClass} ${
+            index === slides.length - 1 ? "opacity-35 cursor-not-allowed" : ""
+          }`}
+        >
+          ›
+        </button>
+
+        <button
+          onClick={() => setLightMode((prev) => !prev)}
+          className={`flex h-9 items-center rounded-full border px-4 text-[11px] font-medium uppercase tracking-[0.12em] transition ${borderClass} ${controlTextClass} ${controlHoverClass}`}
+        >
+          {lightMode ? "Dark" : "Light"}
+        </button>
+      </div>
+    </main>
   );
 }
