@@ -718,17 +718,33 @@ function PageNavigator({
   onClose: () => void;
   onGoToPage: (pageIndex: number) => void;
 }) {
-  const chapterPages = pages
-    .map((page, index) => ({ page, index }))
-    .filter(({ page }) => {
-      return (
-        page.layout === "author" ||
-        page.layout === "book-title" ||
-        page.layout === "contents" ||
-        page.kicker ||
-        page.title
-      );
-    });
+  const navigatorItems = pages
+    .map((page, index) => ({
+      page,
+      index,
+      group: getNavigatorGroup(page),
+      ...getNavigatorLabel(page, index),
+    }))
+    .filter((item) => item.showInNavigator);
+
+  const navigatorGroups = [
+    {
+      title: "Front matter",
+      items: navigatorItems.filter((item) => item.group === "front-matter"),
+    },
+    {
+      title: "Chapter One",
+      items: navigatorItems.filter((item) => item.group === "chapter-one"),
+    },
+    {
+      title: "Chapter Two",
+      items: navigatorItems.filter((item) => item.group === "chapter-two"),
+    },
+    {
+      title: "Other",
+      items: navigatorItems.filter((item) => item.group === "other"),
+    },
+  ].filter((group) => group.items.length > 0);
 
   if (!isOpen) return null;
 
@@ -743,7 +759,7 @@ function PageNavigator({
 
       <section className="page-navigator-panel">
         <header className="page-navigator-header">
-          <div>
+          <div className="page-navigator-heading">
             <p className="page-navigator-kicker">Navigate</p>
             <h2>Pages</h2>
           </div>
@@ -757,65 +773,170 @@ function PageNavigator({
           </button>
         </header>
 
-        <div className="page-navigator-progress">
-          <input
-            type="range"
-            min={0}
-            max={pages.length - 1}
-            value={currentIndex}
-            onChange={(event) => onGoToPage(Number(event.target.value))}
-            aria-label="Jump to page"
-          />
-
-          <p>
+        <div className="page-navigator-meta">
+          <p className="page-navigator-page-meta">
             Page {String(currentIndex + 1).padStart(2, "0")} of{" "}
             {String(pages.length).padStart(2, "0")}
           </p>
+
+          <p className="page-navigator-current-label">
+            {getNavigatorLabel(pages[currentIndex], currentIndex).title}
+          </p>
         </div>
 
-        <div className="page-navigator-featured">
-          {chapterPages.map(({ page, index }) => (
-            <button
-              key={page.slug}
-              className={`navigator-featured-item ${
-                currentIndex === index ? "is-active" : ""
-              }`}
-              onClick={() => onGoToPage(index)}
-              type="button"
-            >
-              <span>{String(index + 1).padStart(2, "0")}</span>
+        <div className="page-navigator-groups">
+          {navigatorGroups.map((group) => (
+            <section className="page-navigator-group" key={group.title}>
+              <header className="page-navigator-group-head">
+                <p>{group.title}</p>
+              </header>
 
-              <strong>
-                {page.layout === "author"
-                  ? page.title
-                  : page.layout === "book-title"
-                    ? page.title
-                    : page.layout === "contents"
-                      ? "Content"
-                      : page.title || page.kicker || `Page ${index + 1}`}
-              </strong>
+              <div className="page-navigator-list">
+                {group.items.map((item) => (
+                  <button
+                    key={item.page.slug}
+                    className={`page-navigator-row ${
+                      currentIndex === item.index ? "is-active" : ""
+                    }`}
+                    onClick={() => onGoToPage(item.index)}
+                    type="button"
+                  >
+                    <span className="page-navigator-row-number">
+                      {String(item.index + 1).padStart(2, "0")}
+                    </span>
 
-              {page.subtitle && <small>{page.subtitle}</small>}
-            </button>
+                    <span className="page-navigator-row-copy">
+                      <strong>{item.title}</strong>
+                      {item.meta && <small>{item.meta}</small>}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
 
-        <div className="page-number-grid">
-          {pages.map((page, index) => (
-            <button
-              key={page.slug}
-              className={`page-number-dot ${
-                currentIndex === index ? "is-active" : ""
-              }`}
-              onClick={() => onGoToPage(index)}
-              type="button"
-              aria-label={`Go to page ${index + 1}`}
-            >
-              {String(index + 1).padStart(2, "0")}
-            </button>
-          ))}
-        </div>
+        <footer className="page-navigator-footer">
+          <form
+            className="page-jump-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+
+              const formData = new FormData(event.currentTarget);
+              const pageValue = Number(formData.get("page"));
+
+              if (!Number.isFinite(pageValue)) return;
+
+              onGoToPage(pageValue - 1);
+            }}
+          >
+            <label className="page-jump-label" htmlFor="page-jump-input">
+              Jump to page
+            </label>
+
+            <div className="page-jump-controls">
+              <input
+                key={`jump-${currentIndex}`}
+                id="page-jump-input"
+                name="page"
+                className="page-jump-input"
+                type="number"
+                min={1}
+                max={pages.length}
+                defaultValue={currentIndex + 1}
+              />
+
+              <button className="page-jump-button" type="submit">
+                Go
+              </button>
+            </div>
+          </form>
+        </footer>
       </section>
     </div>
   );
+}
+
+function getNavigatorLabel(page: BookPage, index: number) {
+  if (page.layout === "author") {
+    return {
+      title: page.title ?? `Page ${index + 1}`,
+      meta: "Opening page",
+      showInNavigator: true,
+    };
+  }
+
+  if (page.layout === "book-title") {
+    return {
+      title: page.title ?? `Page ${index + 1}`,
+      meta: page.subtitle,
+      showInNavigator: true,
+    };
+  }
+
+  if (page.layout === "contents") {
+    return {
+      title: "Content",
+      meta: "Chapter overview",
+      showInNavigator: true,
+    };
+  }
+
+  if (page.layout === "poem") {
+    return {
+      title: page.title ?? "Poem",
+      meta: page.kicker ?? "Poem",
+      showInNavigator: true,
+    };
+  }
+
+  if (page.layout === "chapter-image") {
+    return {
+      title: page.caption ?? "Chapter ending image",
+      meta: [page.location, page.dateTaken].filter(Boolean).join(" • "),
+      showInNavigator: true,
+    };
+  }
+
+  if (page.title) {
+    return {
+      title: page.title,
+      meta: page.subtitle ?? page.kicker,
+      showInNavigator: true,
+    };
+  }
+
+  if (page.kicker) {
+    return {
+      title: page.kicker,
+      meta: page.subtitle,
+      showInNavigator: true,
+    };
+  }
+
+  return {
+    title: `Page ${String(index + 1).padStart(2, "0")}`,
+    meta: undefined,
+    showInNavigator: false,
+  };
+}
+
+function getNavigatorGroup(page: BookPage) {
+  if (
+    page.layout === "author" ||
+    page.layout === "book-title" ||
+    page.layout === "contents"
+  ) {
+    return "front-matter";
+  }
+
+  if (page.slug.startsWith("chapter-one")) {
+    return "chapter-one";
+  }
+
+  if (page.slug.startsWith("chapter-two")) {
+    return "chapter-two";
+  }
+
+  return "other";
 }
