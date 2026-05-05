@@ -1325,7 +1325,7 @@ export const bookPages: BookPage[] = [
     layout: "chapter-image",
     image: "/images/boarding-school.jpg",
     caption: "The Years That Forgot the Morning",
-    dateTaken: "Date unknown",
-    location: "Boarding school",
+    dateTaken: "2016",
+    location: "sabie, Hoërskool Sybrand van Niekerk",
   },
 ];
