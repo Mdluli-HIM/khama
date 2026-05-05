@@ -644,6 +644,36 @@ function PageContent({
     );
   }
 
+  if (page.layout === "poem") {
+    return (
+      <div className="page-poem">
+        <div className="poem-inner">
+          <header className="poem-head">
+            {page.kicker && (
+              <p className="poem-kicker page-animate">{page.kicker}</p>
+            )}
+
+            {page.title && (
+              <h2 className="poem-title page-animate">{page.title}</h2>
+            )}
+          </header>
+
+          <div className="poem-body">
+            {page.body?.map((stanza, index) => (
+              <p className="poem-stanza page-animate" key={index}>
+                {stanza}
+              </p>
+            ))}
+          </div>
+
+          {page.credit && (
+            <p className="poem-credit page-animate">{page.credit}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page-text">
       {(page.kicker || page.title || page.subtitle) && (
