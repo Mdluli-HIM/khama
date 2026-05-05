@@ -1320,6 +1320,36 @@ export const bookPages: BookPage[] = [
       "Sometimes it is the only place left to stand.",
     ],
   },
+
+  {
+    slug: "chapter-two-poem",
+    layout: "poem",
+    kicker: "KARMA VERSE II",
+    title: "The Mirror Other People Held",
+    credit: "written by MMM",
+    body: [
+      "I thought myself a common boy,\nnot much to praise, not much to see;\nbut eyes I feared would pass me by\nkept finding something else in me.",
+
+      "At school, I learned my name could bloom\ninside a mouth I barely knew;\nsome called it charm, some called it fate,\nI only hoped the lie was true.",
+
+      "A girl too bright for my young hands\nonce made my nervous courage rise;\nher yes became a little lamp\ninside the dark I called my size.",
+
+      "But wanting has a shadow too,\nand softness sometimes comes with teeth;\none wounded heart can dress a lie\nand place your name beneath.",
+
+      "I learned that being seen can burn,\nthat praise can turn, that rumours run;\nthat boys can carry blades for words\nyou never spoke to anyone.",
+
+      "Still, somewhere under all that noise,\nbeneath the fear I tried to hide,\nI met a version of myself\nthe world had noticed from outside.",
+
+      "Maybe I was not just ordinary.\nMaybe I was hard to understand.\nMaybe the mirror I avoided\nwas clearer in another’s hand.",
+
+      "And karma, quiet as a bell,\nkept count of what I could not face:\nthe boy who wanted to be chosen,\nyet feared what wanting could replace.",
+
+      "So I left doors half-open,\nsmiled, but never fully stayed;\ncalled it peace, called it growing,\nwhile my softer parts decayed.",
+
+      "Now I know the cruelest lesson\nwas not the danger or the shame;\nit was learning I could be desired\nand still feel distant from my name.",
+    ],
+  },
+
   {
     slug: "chapter-two-image-end",
     layout: "chapter-image",
