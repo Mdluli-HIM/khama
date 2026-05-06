@@ -46,21 +46,21 @@ export const bookPages: BookPage[] = [
     body: [
       "Not where I imagined I would be. Not where I pretended I was too strong to be. But here — soft, uncertain, hopeful, afraid, and asking questions I never thought I would ask.",
 
-      "There is a kind of love that makes you look forward: marriage, children, a home, one person, one future. And then there is a kind of love that makes you look backward.",
+      "There is a kind of love that makes you look forward: marriage, children, a home, one person, one future.",
+
+      "And then there is a kind of love that makes you look backward. It makes you revisit the boy you were, the girls who saw you before you saw yourself, the doors you left half-open, and the moments you called moving on because you did not yet know how to call them loss.",
 
       "This book lives between those two directions: the future I want, and the past that may have prepared me for it.",
 
-      "It begins with me, a girl named Sophia, an empty tennis court, a morning walk, and a promise too young to understand its own weight. But it does not stay there.",
+      "It begins with me, a girl named Sophia, an empty tennis court, a morning walk, and a promise too young to understand its own weight.",
 
-      "It follows the distance, the growing up, the attention I did not know how to carry, the fear that came from being wanted, and the mistakes I made while becoming a man I did not fully understand yet.",
+      "But it does not stay there. It follows the distance, the growing up, the attention I did not know how to carry, the fear that came from being wanted, and the mistakes I made while becoming a man I did not fully understand yet.",
 
       "Now, love has returned with a familiar face. But it came with her past, my past, distance, silence, and questions.",
 
       "Maybe karma is life placing you where someone else once stood, giving you the same ache, the same waiting, the same uncertainty — not to destroy you, but to make you understand.",
 
-      "So this is not a normal love story. It is a confession written in fragments. A map of how I got here.",
-
-      "And if you read closely, maybe you will not only ask what happened between me and Sophia. Maybe you will ask what had to happen to me first.",
+      "So this is not a normal love story. It is a confession written in fragments. A map of how I got here. And maybe, if you read closely, you will not only ask what happened between me and Sophia. Maybe you will ask what had to happen to me first.",
     ],
   },
 

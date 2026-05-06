@@ -1815,7 +1815,7 @@ button {
   width: min(100%, 980px);
   display: grid;
   grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
-  gap: clamp(32px, 6vw, 84px);
+  gap: clamp(34px, 6vw, 86px);
   align-items: start;
 }
 
@@ -1867,53 +1867,26 @@ button {
   color: var(--ink);
 }
 
-.note-body {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: clamp(18px, 2.2vw, 30px);
-  row-gap: 20px;
+/* simple split writing like the reference */
+.note-copy {
+  width: min(100%, 720px);
+  columns: 2 260px;
+  column-gap: clamp(28px, 5vw, 68px);
 }
 
-.note-section {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  gap: 10px;
-  align-items: start;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-}
-
-.note-section-number {
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--karma-orange);
-}
-
-.note-section-label {
-  margin: 0 0 7px;
-  font-size: 8px;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.note-paragraph {
-  margin: 0;
-  font-size: clamp(10px, 0.86vw, 12px);
-  line-height: 1.42;
+.note-copy-paragraph {
+  margin: 0 0 18px;
+  break-inside: avoid;
+  font-size: clamp(17px, 1.75vw, 24px);
+  line-height: 1.18;
   font-weight: 500;
-  letter-spacing: 0.005em;
-  color: var(--ink);
+  letter-spacing: -0.04em;
+  color: var(--karma-maroon);
   text-wrap: pretty;
 }
 
-.note-section:nth-child(3n + 1) .note-paragraph,
-.note-section:nth-child(7) .note-paragraph {
-  color: var(--karma-maroon);
+.note-copy-paragraph:first-child {
+  color: var(--karma-orange);
 }
 
 @media (max-width: 900px) {
@@ -1931,8 +1904,15 @@ button {
     max-width: 38ch;
   }
 
-  .note-body {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .note-copy {
+    width: min(100%, 680px);
+    columns: 2 220px;
+    column-gap: 34px;
+  }
+
+  .note-copy-paragraph {
+    font-size: 17px;
+    line-height: 1.2;
   }
 }
 
@@ -1943,7 +1923,7 @@ button {
 
   .note-card {
     width: min(100%, 350px);
-    gap: 20px;
+    gap: 18px;
   }
 
   .note-head {
@@ -1972,30 +1952,15 @@ button {
     line-height: 1.32;
   }
 
-  .note-body {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 14px;
-    row-gap: 15px;
+  .note-copy {
+    columns: 2 140px;
+    column-gap: 16px;
   }
 
-  .note-section {
-    grid-template-columns: 22px minmax(0, 1fr);
-    gap: 7px;
-    padding-top: 9px;
-  }
-
-  .note-section-number {
-    font-size: 8px;
-  }
-
-  .note-section-label {
-    margin-bottom: 5px;
-    font-size: 6.8px;
-    letter-spacing: 0.14em;
-  }
-
-  .note-paragraph {
-    font-size: 8.5px;
-    line-height: 1.34;
+  .note-copy-paragraph {
+    margin-bottom: 12px;
+    font-size: 9.7px;
+    line-height: 1.22;
+    letter-spacing: -0.015em;
   }
 }
