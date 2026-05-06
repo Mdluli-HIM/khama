@@ -19,7 +19,7 @@ import type { BookPage } from "@/data/book-content";
 
 gsap.registerPlugin(useGSAP);
 
-const INTRO_STORAGE_KEY = "khama-intro-seen";
+const INTRO_STORAGE_KEY = "Karma-intro-seen";
 
 type BookReaderProps = {
   pages: BookPage[];
@@ -73,7 +73,7 @@ export function BookReader({ pages }: BookReaderProps) {
 
     const frame = window.requestAnimationFrame(() => {
       const savedPage = Number(
-        window.localStorage.getItem("khama-current-page"),
+        window.localStorage.getItem("Karma-current-page"),
       );
 
       if (Number.isFinite(savedPage)) {
@@ -89,7 +89,7 @@ export function BookReader({ pages }: BookReaderProps) {
 
   useEffect(() => {
     if (!hasLoadedSavedPage.current) return;
-    window.localStorage.setItem("khama-current-page", String(cursor));
+    window.localStorage.setItem("Karma-current-page", String(cursor));
   }, [cursor]);
 
   useEffect(() => {
@@ -204,7 +204,7 @@ export function BookReader({ pages }: BookReaderProps) {
         type="button"
       />
 
-      <section className="reader-stage" aria-label="Khama website book">
+      <section className="reader-stage" aria-label="Karma website book">
         <AnimatePresence custom={direction} mode="wait">
           <motion.article
             key={currentPage.slug}
@@ -433,7 +433,7 @@ function CinematicIntro({ onComplete }: { onComplete: () => void }) {
 
         <p className="cinema-kicker">MMM PRESENTS</p>
 
-        <h1 className="cinema-title">KHAMA</h1>
+        <h1 className="cinema-title">Karma</h1>
 
         <p className="cinema-subtitle">A WEBSITE BOOK</p>
 
@@ -469,6 +469,32 @@ function PageContent({
         {page.title && (
           <p className="author-title page-animate">{page.title}</p>
         )}
+      </div>
+    );
+  }
+
+  if (page.layout === "note") {
+    return (
+      <div className="page-note">
+        <article className="note-card">
+          <header className="note-head">
+            {page.kicker && (
+              <p className="note-kicker page-animate">{page.kicker}</p>
+            )}
+
+            {page.title && (
+              <h2 className="note-title page-animate">{page.title}</h2>
+            )}
+          </header>
+
+          <div className="note-body">
+            {page.body?.map((paragraph, index) => (
+              <p className="note-paragraph page-animate" key={index}>
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </article>
       </div>
     );
   }
@@ -924,6 +950,7 @@ function getNavigatorLabel(page: BookPage, index: number) {
 function getNavigatorGroup(page: BookPage) {
   if (
     page.layout === "author" ||
+    page.layout === "note" ||
     page.layout === "book-title" ||
     page.layout === "contents"
   ) {

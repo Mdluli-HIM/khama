@@ -11,7 +11,7 @@ const interTight = Inter_Tight({
 });
 
 export const metadata: Metadata = {
-  title: "Khama — Website Book",
+  title: "Karma — Website Book",
   description: "A minimal editorial website-book experience.",
 };
 
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={interTight.variable}>
+      <body className={interTight.variable} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
