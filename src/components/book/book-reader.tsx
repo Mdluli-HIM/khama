@@ -474,6 +474,18 @@ function PageContent({
   }
 
   if (page.layout === "note") {
+    const noteLabels = [
+      "Where I am now",
+      "Forward / backward",
+      "The bridge",
+      "Where it begins",
+      "What follows",
+      "What returned",
+      "Karma",
+      "What this is",
+      "What to ask",
+    ];
+
     return (
       <div className="page-note">
         <article className="note-card">
@@ -485,13 +497,27 @@ function PageContent({
             {page.title && (
               <h2 className="note-title page-animate">{page.title}</h2>
             )}
+
+            {page.subtitle && (
+              <p className="note-lede page-animate">{page.subtitle}</p>
+            )}
           </header>
 
           <div className="note-body">
             {page.body?.map((paragraph, index) => (
-              <p className="note-paragraph page-animate" key={index}>
-                {paragraph}
-              </p>
+              <section className="note-section page-animate" key={index}>
+                <span className="note-section-number">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <div>
+                  <p className="note-section-label">
+                    {noteLabels[index] ?? "Fragment"}
+                  </p>
+
+                  <p className="note-paragraph">{paragraph}</p>
+                </div>
+              </section>
             ))}
           </div>
         </article>

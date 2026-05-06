@@ -1788,19 +1788,19 @@ button {
 }
 
 /* ---------------- */
-/* Intro note page  */
+/* Karma note page  */
 /* ---------------- */
 
 :root {
-  --karma-accent: #d53e0f;
-  --karma-deep: #5e0006;
-  --karma-soft: #eed9b9;
+  --karma-orange: #d53e0f;
+  --karma-maroon: #5e0006;
+  --karma-cream: #eed9b9;
 }
 
 .dark {
-  --karma-accent: #d53e0f;
-  --karma-deep: #eed9b9;
-  --karma-soft: rgba(238, 217, 185, 0.08);
+  --karma-orange: #d53e0f;
+  --karma-maroon: #eed9b9;
+  --karma-cream: rgba(238, 217, 185, 0.08);
 }
 
 .page-note {
@@ -1811,80 +1811,129 @@ button {
   padding: 0 20px;
 }
 
-.note-shell {
-  width: min(100%, 760px);
+.note-card {
+  width: min(100%, 980px);
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 52px);
+  grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 84px);
   align-items: start;
 }
 
 .note-head {
+  position: relative;
   display: grid;
-  gap: 8px;
   align-content: start;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.note-head::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 128px;
+  height: 2px;
+  background: var(--karma-orange);
 }
 
 .note-kicker {
   margin: 0;
-  font-size: 10px;
+  font-size: 9px;
   line-height: 1;
   font-weight: 700;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--karma-accent);
+  color: var(--karma-orange);
 }
 
 .note-title {
   margin: 0;
-  max-width: 12ch;
-  font-size: clamp(22px, 2.5vw, 30px);
-  line-height: 0.98;
+  max-width: 10ch;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 0.88;
   font-weight: 600;
-  letter-spacing: -0.03em;
-  color: var(--karma-deep);
+  letter-spacing: -0.075em;
+  color: var(--karma-maroon);
+}
+
+.note-lede {
+  margin: 10px 0 0;
+  max-width: 24ch;
+  font-size: clamp(12px, 1.2vw, 14px);
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
 }
 
 .note-body {
-  position: relative;
-  padding-left: 22px;
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(18px, 2.2vw, 30px);
+  row-gap: 20px;
 }
 
-.note-body::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 2px;
-  bottom: 2px;
-  width: 2px;
-  background: linear-gradient(
-    to bottom,
-    var(--karma-accent),
-    color-mix(in srgb, var(--karma-accent) 26%, transparent)
-  );
-  opacity: 0.95;
+.note-section {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.note-section-number {
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--karma-orange);
+}
+
+.note-section-label {
+  margin: 0 0 7px;
+  font-size: 8px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .note-paragraph {
   margin: 0;
-  max-width: 52ch;
-  font-size: clamp(12px, 1.25vw, 14px);
-  line-height: 1.48;
+  font-size: clamp(10px, 0.86vw, 12px);
+  line-height: 1.42;
   font-weight: 500;
   letter-spacing: 0.005em;
   color: var(--ink);
+  text-wrap: pretty;
 }
 
-.note-paragraph:nth-child(1),
-.note-paragraph:nth-child(5),
-.note-paragraph:nth-child(11),
-.note-paragraph:nth-child(18),
-.note-paragraph:nth-child(28),
-.note-paragraph:nth-child(32) {
-  margin-top: 8px;
-  color: var(--karma-deep);
+.note-section:nth-child(3n + 1) .note-paragraph,
+.note-section:nth-child(7) .note-paragraph {
+  color: var(--karma-maroon);
+}
+
+@media (max-width: 900px) {
+  .note-card {
+    width: min(100%, 720px);
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .note-title {
+    max-width: 12ch;
+  }
+
+  .note-lede {
+    max-width: 38ch;
+  }
+
+  .note-body {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -1892,14 +1941,18 @@ button {
     padding: 0 16px;
   }
 
-  .note-shell {
-    width: min(100%, 340px);
-    grid-template-columns: 1fr;
-    gap: 18px;
+  .note-card {
+    width: min(100%, 350px);
+    gap: 20px;
   }
 
   .note-head {
-    gap: 6px;
+    gap: 9px;
+    padding-top: 12px;
+  }
+
+  .note-head::before {
+    width: 88px;
   }
 
   .note-kicker {
@@ -1907,22 +1960,42 @@ button {
   }
 
   .note-title {
-    max-width: 14ch;
-    font-size: 20px;
+    max-width: 12ch;
+    font-size: 30px;
+    line-height: 0.9;
+  }
+
+  .note-lede {
+    margin-top: 6px;
+    max-width: 28ch;
+    font-size: 11px;
+    line-height: 1.32;
   }
 
   .note-body {
-    padding-left: 14px;
-    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 14px;
+    row-gap: 15px;
   }
 
-  .note-body::before {
-    width: 1px;
+  .note-section {
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 7px;
+    padding-top: 9px;
+  }
+
+  .note-section-number {
+    font-size: 8px;
+  }
+
+  .note-section-label {
+    margin-bottom: 5px;
+    font-size: 6.8px;
+    letter-spacing: 0.14em;
   }
 
   .note-paragraph {
-    max-width: none;
-    font-size: 11px;
-    line-height: 1.42;
+    font-size: 8.5px;
+    line-height: 1.34;
   }
 }
