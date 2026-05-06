@@ -510,6 +510,15 @@ function PageContent({
           <p className="book-intro-title page-animate">{page.title}</p>
         )}
 
+        <Image
+          src="/images/karma-icon.png"
+          alt=""
+          width={42}
+          height={42}
+          className="book-title-karma-icon page-animate"
+          aria-hidden="true"
+        />
+
         {page.subtitle && (
           <p className="book-intro-subtitle page-animate">{page.subtitle}</p>
         )}
